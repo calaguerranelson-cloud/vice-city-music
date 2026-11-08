@@ -1,0 +1,467 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10091d">
+<title>VICE CITY MUSIC</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ padding:20px;
+ padding-bottom:100px;
+ color:white;
+ background:linear-gradient(160deg,#241039,#10091d 55%,#071b32);
+ font-family:Arial,sans-serif;
+ min-height:100vh;
+}
+
+header{
+ text-align:center;
+ padding:30px 5px;
+}
+
+.logo{
+ font-size:34px;
+ font-weight:900;
+ color:#ff4fc8;
+ text-shadow:0 0 12px #ff22bd,0 0 30px #8d36ff;
+}
+
+.subtitle{
+ color:#42e9ee;
+ font-size:11px;
+ letter-spacing:4px;
+ margin-top:10px;
+}
+
+h2{font-size:19px}
+
+.panel{
+ background:#20152e;
+ border:1px solid #633b78;
+ border-radius:20px;
+ padding:18px;
+ margin-bottom:18px;
+ box-shadow:0 5px 25px #0005;
+}
+
+.hero{
+ text-align:center;
+ padding:28px 15px;
+ background:linear-gradient(140deg,#782b85,#27204c,#102c48);
+}
+
+.hero h1{
+ color:#ff85d5;
+ font-size:26px;
+}
+
+.neon{
+ color:#49eaf0;
+ text-shadow:0 0 12px #49eaf0;
+}
+
+button{
+ border:0;
+ border-radius:12px;
+ padding:12px 16px;
+ color:white;
+ background:linear-gradient(110deg,#ed36a8,#7637df);
+ font-weight:bold;
+ cursor:pointer;
+}
+
+button:active{transform:scale(.96)}
+
+input{
+ width:100%;
+ padding:14px;
+ border-radius:12px;
+ border:1px solid #75468c;
+ background:#120c1e;
+ color:white;
+ margin:10px 0;
+}
+
+input::placeholder{color:#bca9c9}
+
+.song{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:12px 0;
+ border-bottom:1px solid #483052;
+}
+
+.cover{
+ width:46px;
+ height:46px;
+ flex-shrink:0;
+ border-radius:10px;
+ display:grid;
+ place-items:center;
+ background:linear-gradient(135deg,#ff45bd,#5138d8);
+ font-size:23px;
+}
+
+.songinfo{
+ flex:1;
+ min-width:0;
+}
+
+.songinfo strong,.songinfo small{
+ display:block;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.songinfo small{
+ color:#bcaacb;
+ margin-top:5px;
+}
+
+.song button{padding:9px}
+
+#player{text-align:center}
+
+.album{
+ width:150px;
+ height:150px;
+ margin:15px auto;
+ border-radius:22px;
+ background:linear-gradient(140deg,#ff47c4,#7734dc,#21c8db);
+ display:grid;
+ place-items:center;
+ font-size:65px;
+ box-shadow:0 0 30px #e93bb866;
+}
+
+#progress{
+ accent-color:#ff4fc8;
+}
+
+.controls button{
+ margin:5px;
+ font-size:17px;
+}
+
+.secondary{
+ background:#372345;
+ border:1px solid #714c82;
+}
+
+nav{
+ position:fixed;
+ bottom:0;
+ left:0;
+ width:100%;
+ background:#130c20f5;
+ display:flex;
+ justify-content:space-around;
+ padding:12px 4px;
+ border-top:1px solid #593466;
+ z-index:10;
+}
+
+nav button{
+ background:transparent;
+ padding:9px 7px;
+ font-size:12px;
+}
+
+.smalltext{
+ color:#bcaacb;
+ font-size:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">VICE CITY MUSIC</div>
+ <div class="subtitle">YOUR MUSIC. YOUR CITY. YOUR VIBE.</div>
+</header>
+
+<section class="panel hero" id="inicio">
+ <h1>WELCOME TO VICE CITY 🌴</h1>
+ <p>La música nunca duerme.</p>
+ <p class="neon">TU CIUDAD. TU MÚSICA.</p>
+</section>
+
+<section class="panel" id="buscar">
+ <h2>🔎 Buscar música</h2>
+ <input id="search" placeholder="Busca una canción o artista...">
+ <p class="smalltext">Busca entre las canciones que añadas a tu biblioteca.</p>
+</section>
+
+<section class="panel" id="biblioteca">
+ <h2>🎵 Mi biblioteca</h2>
+ <p class="smalltext">Añade archivos musicales de tu teléfono.</p>
+ <input type="file" id="files" accept="audio/*" multiple>
+ <div id="songs">Todavía no tienes canciones.</div>
+</section>
+
+<section class="panel" id="favoritos">
+ <h2>💜 Mis favoritos</h2>
+ <div id="favorites">Todavía no tienes favoritos.</div>
+</section>
+
+<section class="panel" id="listas">
+ <h2>📀 Mis listas</h2>
+ <input id="listName" placeholder="Nombre de tu playlist">
+ <button id="createList">+ Crear playlist</button>
+ <div id="playlists"></div>
+</section>
+
+<section class="panel" id="player">
+ <h2 class="neon">VICE CITY PLAYER</h2>
+ <div class="album">♫</div>
+ <h2 id="currentTitle">Ninguna canción seleccionada</h2>
+ <p id="currentArtist" class="smalltext">Selecciona tu música</p>
+ <input id="progress" type="range" min="0" max="100" value="0">
+ <p class="smalltext" id="time">00:00 / 00:00</p>
+ <div class="controls">
+  <button class="secondary" id="previous">⏮</button>
+  <button id="play">▶</button>
+  <button class="secondary" id="next">⏭</button>
+  <button class="secondary" id="favorite">♡</button>
+ </div>
+ <audio id="audio"></audio>
+</section>
+
+<nav>
+ <button onclick="go('inicio')">⌂ Inicio</button>
+ <button onclick="go('buscar')">⌕ Buscar</button>
+ <button onclick="go('biblioteca')">♫ Música</button>
+ <button onclick="go('favoritos')">♥ Favoritos</button>
+ <button onclick="go('player')">▶ Player</button>
+</nav>
+
+<script>
+
+let tracks=[];
+let current=-1;
+let favorites=new Set();
+let playlists=[];
+
+const audio=document.getElementById("audio");
+
+function go(id){
+ document.getElementById(id).scrollIntoView({
+  behavior:"smooth"
+ });
+}
+
+function renderSongs(){
+ const box=document.getElementById("songs");
+ const query=document.getElementById("search").value.toLowerCase();
+
+ box.innerHTML="";
+
+ const results=tracks.map((t,i)=>({...t,index:i}))
+ .filter(t=>
+  t.name.toLowerCase().includes(query)||
+  t.artist.toLowerCase().includes(query)
+ );
+
+ if(!results.length){
+  box.textContent="No se encontraron canciones.";
+ }
+
+ results.forEach(t=>{
+  const row=document.createElement("div");
+  row.className="song";
+
+  const cover=document.createElement("div");
+  cover.className="cover";
+  cover.textContent="♫";
+
+  const info=document.createElement("div");
+  info.className="songinfo";
+
+  const title=document.createElement("strong");
+  title.textContent=t.name;
+
+  const artist=document.createElement("small");
+  artist.textContent=t.artist;
+
+  info.append(title,artist);
+
+  const play=document.createElement("button");
+  play.textContent="▶";
+  play.onclick=()=>playTrack(t.index);
+
+  const fav=document.createElement("button");
+  fav.className="secondary";
+  fav.textContent=favorites.has(t.index)?"♥":"♡";
+  fav.onclick=()=>{
+   toggleFavorite(t.index);
+   renderSongs();
+  };
+
+  row.append(cover,info,play,fav);
+  box.append(row);
+ });
+
+ renderFavorites();
+}
+
+function playTrack(i){
+ if(!tracks[i])return;
+
+ current=i;
+ audio.src=tracks[i].url;
+ audio.play();
+
+ document.getElementById("currentTitle").textContent=
+ tracks[i].name;
+
+ document.getElementById("currentArtist").textContent=
+ tracks[i].artist;
+
+ document.getElementById("play").textContent="Ⅱ";
+
+ updateFavoriteButton();
+}
+
+function toggleFavorite(i){
+ if(favorites.has(i)){
+  favorites.delete(i);
+ }else{
+  favorites.add(i);
+ }
+ renderFavorites();
+ updateFavoriteButton();
+}
+
+function updateFavoriteButton(){
+ document.getElementById("favorite").textContent=
+ favorites.has(current)?"♥":"♡";
+}
+
+function renderFavorites(){
+ const box=document.getElementById("favorites");
+ box.innerHTML="";
+
+ if(!favorites.size){
+  box.textContent="Todavía no tienes favoritos.";
+  return;
+ }
+
+ favorites.forEach(i=>{
+  if(!tracks[i])return;
+
+  const button=document.createElement("button");
+  button.className="secondary";
+  button.style.margin="5px";
+  button.textContent="♥ "+tracks[i].name;
+  button.onclick=()=>playTrack(i);
+
+  box.append(button);
+ });
+}
+
+document.getElementById("files").onchange=e=>{
+ [...e.target.files].forEach(file=>{
+  tracks.push({
+   name:file.name.replace(/\.[^/.]+$/,""),
+   artist:"Música de mi teléfono",
+   url:URL.createObjectURL(file)
+  });
+ });
+
+ renderSongs();
+};
+
+document.getElementById("search").oninput=renderSongs;
+
+document.getElementById("play").onclick=()=>{
+ if(current===-1){
+  if(tracks.length)playTrack(0);
+  return;
+ }
+
+ if(audio.paused){
+  audio.play();
+  document.getElementById("play").textContent="Ⅱ";
+ }else{
+  audio.pause();
+  document.getElementById("play").textContent="▶";
+ }
+};
+
+document.getElementById("previous").onclick=()=>{
+ if(current>0)playTrack(current-1);
+};
+
+document.getElementById("next").onclick=()=>{
+ if(current<tracks.length-1)playTrack(current+1);
+};
+
+document.getElementById("favorite").onclick=()=>{
+ if(current>=0){
+  toggleFavorite(current);
+ }
+};
+
+audio.onended=()=>{
+ if(current<tracks.length-1){
+  playTrack(current+1);
+ }
+};
+
+audio.ontimeupdate=()=>{
+ if(!audio.duration)return;
+
+ document.getElementById("progress").value=
+ audio.currentTime/audio.duration*100;
+
+ document.getElementById("time").textContent=
+ formatTime(audio.currentTime)+" / "+
+ formatTime(audio.duration);
+};
+
+document.getElementById("progress").oninput=e=>{
+ if(audio.duration){
+  audio.currentTime=e.target.value/100*audio.duration;
+ }
+};
+
+function formatTime(seconds){
+ if(!Number.isFinite(seconds))return "00:00";
+ const m=Math.floor(seconds/60);
+ const s=Math.floor(seconds%60);
+ return String(m).padStart(2,"0")+":"+
+ String(s).padStart(2,"0");
+}
+
+document.getElementById("createList").onclick=()=>{
+ const input=document.getElementById("listName");
+ const name=input.value.trim();
+
+ if(!name){
+  alert("Escribe un nombre para tu playlist.");
+  return;
+ }
+
+ playlists.push(name);
+
+ const box=document.getElementById("playlists");
+ const p=document.createElement("p");
+ p.textContent="📀 "+name;
+ box.append(p);
+
+ input.value="";
+};
+
+</script>
+</body>
+</html>
